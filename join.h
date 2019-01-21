@@ -29,26 +29,11 @@ concept Iterables = (... && HasBegin<T<Args>>::value ) && (... && HasEnd<T<Args>
 //template<typename... T>
 //concept Iterables = (... && HasBegin<T>::value ) && (... && HasEnd<T>::value);
 
-
-template<typename Iterator>
-bool notEqual(std::pair<Iterator, Iterator> iterator)
-{
-    return iterator.first != iterator.first;
-}
-
-template<typename Iterator, typename... Iterators>
-bool notEqual(std::pair<Iterator, Iterator> iterator, std::pair<Iterators, Iterators>... iterators)
-{
-    return iterator.first != iterator.first && notEqual(iterators...);
-}
-
-
 template<typename Functor, typename... Iterators>
 void helper(Functor functor, std::pair<Iterators, Iterators>... iterators)
 {
-    functor((*(iterators.first++))...);
-    if(notEqual(iterators...))
-        helper(functor, iterators...);
+    while(((iterators.first != iterators.second) && ...))
+        functor((*(iterators.first++))...);
 }
 
 template<typename Functor, template<typename> class iterable, typename... Args>
